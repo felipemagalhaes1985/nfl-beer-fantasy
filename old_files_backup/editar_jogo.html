@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFL Beer Fantasy - Editar Jogo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>NFL Beer Fantasy</h1>
+            <nav>
+    <ul>
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        {% if current_user.is_authenticated %} {# Só mostra links se o usuário estiver logado #}
+            <li><a href="{{ url_for('meu_perfil') }}">Meu Perfil</a></li>
+            <li><a href="{{ url_for('palpitar') }}">Palpitar</a></li>
+            {# Se for admin, mostra o link para o painel administrativo #}
+            {% if current_user.is_admin %}
+                <li><a href="{{ url_for('admin_dashboard') }}">Painel Administrativo</a></li>
+            {% endif %}
+            <li><a href="{{ url_for('logout') }}">Sair</a></li>
+        {% else %} {# Mostra links de login/registro se não estiver logado #}
+            <li><a href="{{ url_for('login') }}">Entrar</a></li>
+            <li><a href="{{ url_for('registro') }}">Registrar</a></li>
+        {% endif %}
+    </ul>
+</nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <h2>Editar Jogo: {{ jogo.time1 }} vs {{ jogo.time2 }}</h2>
+
+        {# Exibir mensagens flash (sucesso/erro) #}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Exemplo de como seu formulário de editar jogo deve se parecer no editar_jogo.html -->
+<form action="{{ url_for('editar_jogo', jogo_id=jogo.id) }}" method="POST">
+    <div class="form-group">
+        <label for="time1">Time 1:</label>
+        <input type="text" class="form-control" id="time1" name="time1" value="{{ jogo.time1 }}" required>
+    </div>
+    <div class="form-group">
+        <label for="time2">Time 2:</label>
+        <input type="text" class="form-control" id="time2" name="time2" value="{{ jogo.time2 }}" required>
+    </div>
+    <div class="form-group">
+        <label for="data_hora">Data e Hora:</label>
+        <input type="datetime-local" class="form-control" id="data_hora" name="data_hora" value="{{ data_hora_formatada }}" required>
+    </div>
+    <div class="form-group">
+        <label for="semana">Semana:</label>
+        <input type="number" class="form-control" id="semana" name="semana" value="{{ jogo.semana }}" min="1" required>
+    </div>
+    <div class="form-group">
+        <label for="id_externo">ID Externo (Opcional):</label>
+        <input type="text" class="form-control" id="id_externo" name="id_externo" value="{{ jogo.id_externo or '' }}">
+    </div>
+
+    <!-- Adicione ESTES CAMPOS para os placares finais -->
+    <div class="form-group mt-3">
+        <label for="placar_time1_final">Placar Final Time 1:</label>
+        <input type="number" class="form-control" id="placar_time1_final" name="placar_time1_final" 
+               value="{% if jogo.placar_time1_final is not none %}{{ jogo.placar_time1_final }}{% else %}{% endif %}" min="0">
+    </div>
+    <div class="form-group">
+        <label for="placar_time2_final">Placar Final Time 2:</label>
+        <input type="number" class="form-control" id="placar_time2_final" name="placar_time2_final" 
+               value="{% if jogo.placar_time2_final is not none %}{{ jogo.placar_time2_final }}{% else %}{% endif %}" min="0">
+    </div>
+    <!-- Fim dos campos de placar final -->
+
+    <button type="submit" class="btn btn-primary mt-3">Atualizar Jogo</button>
+</form>

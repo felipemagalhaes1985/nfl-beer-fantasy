@@ -1,0 +1,162 @@
+[
+  {
+    "id_externo": "nfl_2025_s1_dal_phi",
+    "semana": 1,
+    "data_hora": "2025-09-04T21:20",
+    "time1": "Dallas Cowboys",
+    "time2": "Philadelphia Eagles",
+    "resultado": null,
+    "placar_time1_final": null,
+    "placar_time2_final": null
+  },
+  {
+    "id_externo": "nfl_2025_s1_kc_lac",
+    "semana": 1,
+    "data_hora": "2025-09-05T21:00",
+    "time1": "Kansas City Chiefs",
+    "time2": "Los Angeles Chargers",
+    "resultado": null,
+    "placar_time1_final": null,
+    "placar_time2_final": null
+  },
+  {
+    "id_externo": "nfl_2025_s1_tb_atl",
+    "semana": 1,
+    "data_hora": "2025-09-07T14:00",
+    "time1": "Tampa Bay Buccaneers",
+    "time2": "Atlanta Falcons",
+    "resultado": null,
+    "placar_time1_final": null,
+    "placar_time2_final": null
+  },
+  {
+    "id_externo": "nfl_2025_s1_cin_cle",
+    "semana": 1,
+    "data_hora": "2025-09-07T14:00",
+    "time1": "Cincinnati Bengals",
+    "time2": "Cleveland Browns",
+    "resultado": null,
+    "placar_time1_final": null,
+    "placar_time2_final": null
+  },
+  {
+    "id_externo": "nfl_2025_s1_mia_ind",
+    "semana": 1,
+    "data_hora": "2025-09-07T14:00",
+    "time1": "Miami Dolphins",
+    "time2": "Indianapolis Colts",
+    "resultado": null,
+    "placar_time1_final": null,
+    "placar_time2_final": null
+  },
+  {
+    "id_externo": "nfl_2025_s1_lv_ne",
+    "semana": 1,
+    "data_hora": "2025-09-07T14:00",
+    "time1": "Las Vegas Raiders",
+    "time2": "New England Patriots",
+    "resultado": null,
+    "placar_time1_final": null,
+    "placar_time2_final": null
+  },
+  {
+    "id_externo": "nfl_2025_s1_ari_no",
+    "semana": 1,
+    "data_hora": "2025-09-07T14:00",
+    "time1": "Arizona Cardinals",
+    "time2": "New Orleans Saints",
+    "resultado": null,
+    "placar_time1_final": null,
+    "placar_time2_final": null
+  },
+  {
+    "id_externo": "nfl_2025_s1_pit_nyj",
+    "semana": 1,
+    "data_hora": "2025-09-07T14:00",
+    "time1": "Pittsburgh Steelers",
+    "time2": "New York Jets",
+    "resultado": null,
+    "placar_time1_final": null,
+    "placar_time2_final": null
+  },
+  {
+    "id_externo": "nfl_2025_s1_nyg_was",
+    "semana": 1,
+    "data_hora": "2025-09-07T14:00",
+    "time1": "New York Giants",
+    "time2": "Washington Commanders",
+    "resultado": null,
+    "placar_time1_final": null,
+    "placar_time2_final": null
+  },
+  {
+    "id_externo": "nfl_2025_s1_car_jax",
+    "semana": 1,
+    "data_hora": "2025-09-07T14:00",
+    "time1": "Carolina Panthers",
+    "time2": "Jacksonville Jaguars",
+    "resultado": null,
+    "placar_time1_final": null,
+    "placar_time2_final": null
+  },
+  {
+    "id_externo": "nfl_2025_s1_ten_den",
+    "semana": 1,
+    "data_hora": "2025-09-07T17:05",
+    "time1": "Tennessee Titans",
+    "time2": "Denver Broncos",
+    "resultado": null,
+    "placar_time1_final": null,
+    "placar_time2_final": null
+  },
+  {
+    "id_externo": "nfl_2025_s1_sf_sea",
+    "semana": 1,
+    "data_hora": "2025-09-07T17:05",
+    "time1": "San Francisco 49ers",
+    "time2": "Seattle Seahawks",
+    "resultado": null,
+    "placar_time1_final": null,
+    "placar_time2_final": null
+  },
+  {
+    "id_externo": "nfl_2025_s1_det_gb",
+    "semana": 1,
+    "data_hora": "2025-09-07T17:25",
+    "time1": "Detroit Lions",
+    "time2": "Green Bay Packers",
+    "resultado": null,
+    "placar_time1_final": null,
+    "placar_time2_final": null
+  },
+  {
+    "id_externo": "nfl_2025_s1_hou_lar",
+    "semana": 1,
+    "data_hora": "2025-09-07T17:25",
+    "time1": "Houston Texans",
+    "time2": "Los Angeles Rams",
+    "resultado": null,
+    "placar_time1_final": null,
+    "placar_time2_final": null
+  },
+  {
+    "id_externo": "nfl_2025_s1_bal_buf",
+    "semana": 1,
+    "data_hora": "2025-09-07T21:20",
+    "time1": "Baltimore Ravens",
+    "time2": "Buffalo Bills",
+    "resultado": null,
+    "placar_time1_final": null,
+    "placar_time2_final": null
+  },
+  {
+    "id_externo": "nfl_2025_s1_min_chi",
+    "semana": 1,
+    "data_hora": "2025-09-08T21:15",
+    "time1": "Minnesota Vikings",
+    "time2": "Chicago Bears",
+    "resultado": null,
+    "placar_time1_final": null,
+    "placar_time2_final": null
+  }
+]

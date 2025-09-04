@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFL Beer Fantasy - Palpitar</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>NFL Beer Fantasy</h1>
+            <nav>
+    <ul>
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        {% if current_user.is_authenticated %} {# Só mostra links se o usuário estiver logado #}
+            <li><a href="{{ url_for('meu_perfil') }}">Meu Perfil</a></li>
+            <li><a href="{{ url_for('palpitar') }}">Palpitar</a></li>
+            {# Se for admin, mostra o link para o painel administrativo #}
+            {% if current_user.is_admin %}
+                <li><a href="{{ url_for('admin_dashboard') }}">Painel Administrativo</a></li>
+            {% endif %}
+            <li><a href="{{ url_for('logout') }}">Sair</a></li>
+        {% else %} {# Mostra links de login/registro se não estiver logado #}
+            <li><a href="{{ url_for('login') }}">Entrar</a></li>
+            <li><a href="{{ url_for('registro') }}">Registrar</a></li>
+        {% endif %}
+    </ul>
+</nav>
+        </div>
+    </header>
+
+        <main class="container">
+        <h2>Registrar Palpite</h2>
+
+        {# Exibir mensagens flash (sucesso/erro) #}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <!-- REMOVIDO: O formulário <form method="POST" action="{{ url_for('palpitar') }}"> principal -->
+        <!-- REMOVIDO: O div.form-group com o select de jogo_id -->
+
+        <!-- Agora o loop FOR e seus formulários internos devem começar aqui: -->
+        {% for jogo in jogos %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ jogo.time1 }} vs {{ jogo.time2 }} (Semana {{ jogo.semana }})</h5>
+                    <p class="card-text">Data: {{ jogo.data_hora.strftime('%d/%m %H:%M') }}</p>
+
+                    <form action="{{ url_for('palpitar') }}" method="POST">
+                        <input type="hidden" name="jogo_id" value="{{ jogo.id }}">
+                        
+                        <div class="form-group">
+                            <label>Seu Palpite para Vencedor:</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="escolha" id="{{ jogo.id }}_time1_vence" value="time1_vence" {% if jogo.meu_palpite and jogo.meu_palpite.escolha == 'time1_vence' %}checked{% endif %} required>
+                                <label class="form-check-label" for="{{ jogo.id }}_time1_vence">{{ jogo.time1 }} vence</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="escolha" id="{{ jogo.id }}_time2_vence" value="time2_vence" {% if jogo.meu_palpite and jogo.meu_palpite.escolha == 'time2_vence' %}checked{% endif %} required>
+                                <label class="form-check-label" for="{{ jogo.id }}_time2_vence">{{ jogo.time2 }} vence</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="escolha" id="{{ jogo.id }}_empate" value="empate" {% if jogo.meu_palpite and jogo.meu_palpite.escolha == 'empate' %}checked{% endif %} required>
+                                <label class="form-check-label" for="{{ jogo.id }}_empate">Empate</label>
+                            </div>
+                        </div>
+
+                        <!-- Adicione ESTES CAMPOS para o palpite do placar -->
+                        <div class="form-group mt-3">
+                            <label for="{{ jogo.id }}_placar_time1">Palpite Placar {{ jogo.time1 }}:</label>
+                            <input type="number" class="form-control" id="{{ jogo.id }}_placar_time1" name="placar_time1" 
+                                   value="{% if jogo.meu_palpite and jogo.meu_palpite.palpite_placar_time1 is not none %}{{ jogo.meu_palpite.palpite_placar_time1 }}{% else %}0{% endif %}" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ jogo.id }}_placar_time2">Palpite Placar {{ jogo.time2 }}:</label>
+                            <input type="number" class="form-control" id="{{ jogo.id }}_placar_time2" name="placar_time2" 
+                                   value="{% if jogo.meu_palpite and jogo.meu_palpite.palpite_placar_time2 is not none %}{{ jogo.meu_palpite.palpite_placar_time2 }}{% else %}0{% endif %}" min="0" required>
+                        </div>
+                        <!-- Fim dos campos de placar -->
+
+                        <button type="submit" class="btn btn-primary mt-3">Registrar Palpite</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    </main>

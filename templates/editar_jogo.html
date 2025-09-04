@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFL Beer Fantasy - Editar Jogo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><a href="{{ url_for('home') }}">NFL Beer Fantasy</a></h1>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('regras') }}">Regras</a></li>
+                    <li><a href="{{ url_for('evolucao_pontuacao_page') }}">Evolução Pontuação</a></li>
+                    {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('meu_perfil') }}">Meu Perfil</a></li>
+                        <li><a href="{{ url_for('palpitar') }}">Palpitar</a></li>
+                        {% if current_user.is_admin %}
+                            <li><a href="{{ url_for('admin_dashboard') }}">Painel Administrativo</a></li>
+                        {% endif %}
+                        <li><a href="{{ url_for('logout') }}">Sair</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('login') }}">Entrar</a></li>
+                        <li><a href="{{ url_for('registro') }}">Registrar</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <h2>Editar Jogo #{{ jogo.id }}</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('editar_jogo', jogo_id=jogo.id) }}">
+            <div class="form-group">
+                <label for="time1">Time 1 (Casa):</label>
+                <input type="text" id="time1" name="time1" value="{{ jogo.time1 }}" required>
+            </div>
+            <div class="form-group">
+                <label for="time2">Time 2 (Visitante):</label>
+                <input type="text" id="time2" name="time2" value="{{ jogo.time2 }}" required>
+            </div>
+            <div class="form-group">
+                <label for="data_hora">Data e Hora (Local):</label>
+                <input type="datetime-local" id="data_hora" name="data_hora" value="{{ jogo.data_hora_str }}" required>
+            </div>
+            <div class="form-group">
+                <label for="semana">Semana:</label>
+                <input type="number" id="semana" name="semana" min="1" value="{{ jogo.semana }}" required>
+            </div>
+            <div class="form-group">
+                <label for="id_externo">ID Externo (Opcional):</label>
+                <input type="text" id="id_externo" name="id_externo" value="{{ jogo.id_externo if jogo.id_externo else '' }}">
+            </div>
+            <div class="form-group">
+                <label for="resultado">Resultado:</label>
+                <select id="resultado" name="resultado">
+                    <option value="None" {% if jogo.resultado is none %}selected{% endif %}>Não Definido</option>
+                    <option value="time1_vence" {% if jogo.resultado == 'time1_vence' %}selected{% endif %}>{{ jogo.time1 }} Vence</option>
+                    <option value="time2_vence" {% if jogo.resultado == 'time2_vence' %}selected{% endif %}>{{ jogo.time2 }} Vence</option>
+                    <option value="empate" {% if jogo.resultado == 'empate' %}selected{% endif %}>Empate</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="placar_time1_final">Placar Final {{ jogo.time1 }}:</label>
+                <input type="number" id="placar_time1_final" name="placar_time1_final" value="{{ jogo.placar_time1_final if jogo.placar_time1_final is not none else '' }}" min="0">
+            </div>
+            <div class="form-group">
+                <label for="placar_time2_final">Placar Final {{ jogo.time2 }}:</label>
+                <input type="number" id="placar_time2_final" name="placar_time2_final" value="{{ jogo.placar_time2_final if jogo.placar_time2_final is not none else '' }}" min="0">
+            </div>
+            <button type="submit" class="btn-primary">Salvar Alterações</button>
+            <a href="{{ url_for('gerenciar_jogos') }}" class="btn-info">Cancelar e Voltar</a>
+        </form>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 NFL Beer Fantasy. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>

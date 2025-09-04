@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFL Beer Fantasy</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <h1 class="mb-4">Bem-vindo ao NFL Beer Fantasy!</h1>
+        <p>Acompanhe seus palpites e a pontuação da liga.</p>
+        
+        {% if current_user.is_authenticated %}
+            <p>Olá, {{ current_user.nome }}! Você está logado.</p>
+            <p>
+                <a href="{{ url_for('palpitar') }}" class="btn btn-primary">Fazer Palpite</a>
+                <a href="{{ url_for('meu_perfil') }}" class="btn btn-info">Meu Perfil</a>
+                {% if current_user.is_admin %}
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-warning">Admin Dashboard</a>
+                {% endif %}
+                <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+            </p>
+        {% else %}
+            <p>
+                <a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
+                <a href="{{ url_for('registro') }}" class="btn btn-success">Registrar</a>
+            </p>
+        {% endif %}
+
+        <hr>
+
+        <!-- Ranking Geral dos Participantes -->
+        <h2 class="mt-4">Ranking Geral dos Participantes</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Posição</th>
+                    <th>Participante</th>
+                    <th>Pontuação Total (F1-like)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pos, participante in enumerate(ranking_geral) %}
+                <tr>
+                    <td>{{ pos + 1 }}</td>
+                    <td>{{ participante.nome }}</td>
+                    <td>{{ participante.total_pontos_f1 | default(0) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Pontuação por Rodada -->
+        <h2 class="mt-4">Pontuação por Rodada</h2>
+        {% for semana, pontuacoes in pontuacoes_agrupadas.items()|sort %}
+            <h3>Semana {{ semana }}</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Participante</th>
+                        <th>Pontos F1-like</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in pontuacoes %}
+                        <tr>
+                            <td>{{ p.nome }}</td>
+                            <td>{{ p.pontos_f1 }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Nenhuma pontuação por rodada disponível ainda.</p>
+        {% endfor %}
+        
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

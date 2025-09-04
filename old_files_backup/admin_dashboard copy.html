@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFL Beer Fantasy - Painel Administrativo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><a href="{{ url_for('home') }}">NFL Beer Fantasy</a></h1>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('meu_perfil') }}">Meu Perfil</a></li>
+                        <li><a href="{{ url_for('palpitar') }}">Palpitar</a></li>
+                        {% if current_user.is_admin %}
+                            <li><a href="{{ url_for('admin_dashboard') }}">Painel Administrativo</a></li>
+                        {% endif %}
+                        <li><a href="{{ url_for('logout') }}">Sair</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('login') }}">Entrar</a></li>
+                        <li><a href="{{ url_for('registro') }}">Registrar</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <h2>Painel Administrativo</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <div class="admin-menu">
+            <h3>Configurações Globais</h3>
+            <ul>
+                <li><a href="{{ url_for('admin_config') }}" class="btn-primary">Gerenciar Semana Atual</a></li>
+            </ul>
+
+            <h3>Gerenciamento de Jogos</h3>
+            <ul>
+                <li>
+                    <form action="{{ url_for('importar_jogos') }}" method="post" style="display:inline;">
+                        <button type="submit" class="btn-primary">Importar Jogos</button>
+                    </form>
+                </li>
+                <li>
+                    <form action="{{ url_for('importar_resultados_json_route') }}" method="post" style="display:inline;">
+                        <button type="submit" class="btn-primary">Importar Resultados</button>
+                    </form>
+                </li>
+                <li><a href="{{ url_for('adicionar_jogo') }}" class="btn-primary">Adicionar Jogo Manualmente</a></li>
+                <li><a href="{{ url_for('gerenciar_jogos') }}" class="btn-primary">Ver/Editar/Excluir Jogos</a></li>
+                <li><a href="{{ url_for('definir_resultado') }}" class="btn-primary">Definir Resultado Manualmente</a></li>
+                <li><a href="{{ url_for('calcular_f1_rodada', numero_rodada=1) }}" class="btn-primary">Calcular Pontos F1 (Rodada 1)</a></li>
+            </ul>
+
+            <h3>Gerenciamento de Participantes</h3>
+            <ul>
+                <li><a href="{{ url_for('adicionar_participante_admin') }}" class="btn-primary">Adicionar Novo Participante (Admin)</a></li>
+                <li><a href="{{ url_for('gerenciar_participantes') }}" class="btn-primary">Ver/Editar/Excluir Participantes</a></li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 NFL Beer Fantasy. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>

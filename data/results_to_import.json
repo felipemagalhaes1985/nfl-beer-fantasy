@@ -1,0 +1,98 @@
+[
+  {
+    "id_externo": "NFL2025W12-001",
+    "resultado": "time1_vence",
+    "placar_time1_final": 47,
+    "placar_time2_final": 28
+  },
+  {
+    "id_externo": "NFL2025W12-002",
+    "resultado": "time2_vence",
+    "placar_time1_final": 30,
+    "placar_time2_final": 40
+  },
+  {
+    "id_externo": "NFL2025W12-003",
+    "resultado": "time2_vence",
+    "placar_time1_final": 12,
+    "placar_time2_final": 20
+  },
+  {
+    "id_externo": "NFL2025W12-004",
+    "resultado": "time2_vence",
+    "placar_time1_final": 12,
+    "placar_time2_final": 26
+  },
+  {
+    "id_externo": "NFL2025W12-005",
+    "resultado": "time1_vence",
+    "placar_time1_final": 42,
+    "placar_time2_final": 27
+  },
+  {
+    "id_externo": "NFL2025W12-006",
+    "resultado": "time2_vence",
+    "placar_time1_final": 23,
+    "placar_time2_final": 29
+  },
+  {
+    "id_externo": "NFL2025W12-007",
+    "resultado": "time1_vence",
+    "placar_time1_final": 39,
+    "placar_time2_final": 30
+  },
+  {
+    "id_externo": "NFL2025W12-008",
+    "resultado": "time2_vence",
+    "placar_time1_final": 14,
+    "placar_time2_final": 23
+  },
+  {
+    "id_externo": "NFL2025W12-009",
+    "resultado": "empate",
+    "placar_time1_final": 20,
+    "placar_time2_final": 20
+  },
+  {
+    "id_externo": "NFL2025W12-010",
+    "resultado": "time1_vence",
+    "placar_time1_final": 31,
+    "placar_time2_final": 24
+  },
+  {
+    "id_externo": "NFL2025W12-011",
+    "resultado": "time2_vence",
+    "placar_time1_final": 20,
+    "placar_time2_final": 27
+  },
+  {
+    "id_externo": "NFL2025W12-012",
+    "resultado": "time1_vence",
+    "placar_time1_final": 41,
+    "placar_time2_final": 31
+  },
+  {
+    "id_externo": "NFL2025W12-013",
+    "resultado": "time2_vence",
+    "placar_time1_final": 17,
+    "placar_time2_final": 27
+  },
+  {
+    "id_externo": "NFL2025W12-014",
+    "resultado": "time2_vence",
+    "placar_time1_final": 24,
+    "placar_time2_final": 31
+  },
+  {
+    "id_externo": "NFL2025W12-015",
+    "resultado": "empate",
+    "placar_time1_final": 24,
+    "placar_time2_final": 24
+  },
+  {
+    "id_externo": "NFL2025W12-016",
+    "resultado": "time1_vence",
+    "placar_time1_final": 35,
+    "placar_time2_final": 28
+  }
+]

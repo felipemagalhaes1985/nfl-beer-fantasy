@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFL Beer Fantasy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><a href="{{ url_for('home') }}">NFL Beer Fantasy</a></h1>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('regras') }}">Regras</a></li>
+                    <li><a href="{{ url_for('evolucao_pontuacao_page') }}">Evolução Pontuação</a></li>
+                    {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('meu_perfil') }}">Meu Perfil</a></li>
+                        <li><a href="{{ url_for('palpitar') }}">Palpitar</a></li>
+                        {% if current_user.is_admin %}
+                            <li><a href="{{ url_for('admin_dashboard') }}">Painel Administrativo</a></li>
+                        {% endif %}
+                        <li><a href="{{ url_for('logout') }}">Sair</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('login') }}">Entrar</a></li>
+                        <li><a href="{{ url_for('registro') }}">Registrar</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <h2>Bem-vindo ao NFL Beer Fantasy!</h2>
+        <p>Acompanhe seus palpites e a pontuação da liga.</p>
+        
+        {% if current_user.is_authenticated %}
+            <p>Olá, {{ current_user.nome }}! Você está logado.</p>
+        {% endif %}
+
+        <hr>
+
+        <!-- Ranking Geral dos Participantes -->
+        <h2 class="mt-4">Ranking Geral dos Participantes</h2>
+        {% if ranking_geral %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Posição</th>
+                        <th>Participante</th>
+                        <th>Pontuação Total (F1-like)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pos, participante in enumerate(ranking_geral) %}
+                    <tr>
+                        <td>{{ pos + 1 }}</td>
+                        <td>{{ participante.nome }}</td>
+                        <td>{{ participante.total_pontos_f1 }}</td> {# Removido default(0) pois o COALESCE já garante 0 #}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Nenhum ranking geral disponível ainda.</p>
+        {% endif %}
+
+        <hr>
+
+        <!-- Tabela de Jogos da Semana Atual / Próximos Jogos -->
+        {# Esta linha já está pronta para a nova lógica de 'semana_atual_display' #}
+        <h2 class="mt-4">Jogos da Semana {{ semana_atual_display }}</h2> 
+        {% if jogos_semana_atual %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Jogo</th>
+                        <th>Data e Hora (Local)</th>
+                        <th>Status</th>
+                        <th>Placar Final</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for jogo in jogos_semana_atual %}
+                    <tr>
+                        <td>{{ jogo.time1 }} vs {{ jogo.time2 }}</td>
+                        <td>{{ jogo.data_hora.astimezone(BRAZIL_TIMEZONE).strftime('%d/%m %H:%M') }}</td>
+                        <td>
+                            {% if jogo.resultado %}
+                                Finalizado ({{ jogo.resultado.replace('_', ' ').title() }})
+                            {% elif jogo.data_hora.replace(tzinfo=utcnow().tzinfo) > utcnow() %}
+                                Em Breve
+                            {% else %}
+                                Em Andamento / Aguardando Resultado
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if jogo.placar_time1_final is not none and jogo.placar_time2_final is not none %}
+                                {{ jogo.placar_time1_final }} - {{ jogo.placar_time2_final }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Nenhum jogo disponível para esta semana.</p>
+        {% endif %}
+
+        <hr>
+
+        <!-- Pontuação por Rodada -->
+        <h2 class="mt-4">Pontuação por Rodada</h2>
+        {% if pontuacoes_agrupadas %}
+            {# Garante que a ordenação das semanas seja numérica #}
+            {% for semana, pontuacoes in pontuacoes_agrupadas.items()|sort %} 
+                <h3>Semana {{ semana }}</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Participante</th>
+                            <th>Pontos F1-like</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in pontuacoes %}
+                            <tr>
+                                <td>{{ p.nome }}</td>
+                                <td>{{ p.pontos_f1 }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endfor %}
+        {% else %}
+            <p>Nenhuma pontuação por rodada disponível ainda.</p>
+        {% endif %}
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 NFL Beer Fantasy. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>

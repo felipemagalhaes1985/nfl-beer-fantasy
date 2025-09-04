@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFL Beer Fantasy - Regras</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><a href="{{ url_for('home') }}">NFL Beer Fantasy</a></h1>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('regras') }}">Regras</a></li> {# Link para esta página #}
+                    <li><a href="{{ url_for('evolucao_pontuacao_page') }}">Evolução Pontuação</a></li>
+                    {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('meu_perfil') }}">Meu Perfil</a></li>
+                        <li><a href="{{ url_for('palpitar') }}">Palpitar</a></li>
+                        {% if current_user.is_admin %}
+                            <li><a href="{{ url_for('admin_dashboard') }}">Painel Administrativo</a></li>
+                        {% endif %}
+                        <li><a href="{{ url_for('logout') }}">Sair</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('login') }}">Entrar</a></li>
+                        <li><a href="{{ url_for('registro') }}">Registrar</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <h2>Regras do NFL Beer Fantasy</h2>
+
+        <p>Bem-vindo ao NFL Beer Fantasy! Prepare-se para testar seus conhecimentos sobre a NFL e competir com seus amigos. Nosso fantasy é baseado em palpites de resultados dos jogos da temporada regular, sem a necessidade de montar times. A cada rodada, você fará seus palpites e acumulará pontos para subir no ranking geral.</p>
+
+        <h3>1. O Jogo</h3>
+        <ul>
+            <li>O fantasy se baseia em palpites de resultados de jogos da temporada regular da NFL.</li>
+            <li>Você deverá prever o vencedor de cada jogo e o placar exato para ambos os times.</li>
+            <li>Todos os palpites devem ser enviados antes do início de cada jogo. Palpites para jogos já iniciados não serão aceitos.</li>
+            <li>É possível alterar um palpite para um jogo até o momento de seu início.</li>
+        </ul>
+
+        <h3>2. Sistema de Pontuação</h3>
+        <p>A pontuação é calculada por jogo, e as pontuações semanais são convertidas para um sistema inspirado na Fórmula 1:</p>
+        
+        <h4>Pontuação por Jogo:</h4>
+        <ul>
+            <li><strong>1 Ponto:</strong> Por acertar o vencedor do jogo (ou empate, se aplicável).</li>
+            <li><strong>Bônus de Prime Game (+3 Pontos):</strong> Se o jogo for um "Prime Game" (Thursday Night Football, Sunday Night Football ou Monday Night Football) e você acertar o vencedor (ou empate), você ganha um bônus extra de 3 pontos. Ou seja, um acerto simples em Prime Game vale 1 + 3 = 4 pontos.</li>
+            <li><strong>1 Ponto:</strong> Por acertar o placar EXATO de ambos os times. (Este ponto é cumulativo com o acerto do vencedor).</li>
+            <li><strong>1 Ponto:</strong> Se você não acertar o placar exato, mas acertar a diferença de pontos entre os times, você ganha 1 ponto. (Este ponto só é válido se você já acertou o vencedor e não acertou o placar exato).</li>
+        </ul>
+        <p><strong>Exemplo de Pontuação por Jogo:</strong></p>
+        <ul>
+            <li>Acertou apenas o vencedor: 1 ponto (ou 4 se for Prime Game)</li>
+            <li>Acertou o vencedor e o placar exato: 1 + 1 = 2 pontos (ou 5 se for Prime Game)</li>
+            <li>Acertou o vencedor e a diferença de pontos (mas não o placar exato): 1 + 1 = 2 pontos (ou 5 se for Prime Game)</li>
+        </ul>
+
+        <h4>Pontuação Semanal (F1-like):</h4>
+        <p>Ao final de cada semana, os pontos acumulados em todos os jogos daquela semana são somados para cada participante. Os participantes com as maiores pontuações RAW da semana recebem pontos F1-like para o ranking geral, da seguinte forma:</p>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th scope="col">Posição</th>
+              <th scope="col">Pontos F1-like</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1º Lugar</td><td>25 pontos</td></tr>
+            <tr><td>2º Lugar</td><td>18 pontos</td></tr>
+            <tr><td>3º Lugar</td><td>15 pontos</td></tr>
+            <tr><td>4º Lugar</td><td>12 pontos</td></tr>
+            <tr><td>5º Lugar</td><td>10 pontos</td></tr>
+            <tr><td>6º Lugar</td><td>8 pontos</td></tr>
+            <tr><td>7º Lugar</td><td>6 pontos</td></tr>
+            <tr><td>8º Lugar</td><td>4 pontos</td></tr>
+            <tr><td>9º Lugar</td><td>2 pontos</td></tr>
+            <tr><td>10º Lugar</td><td>1 ponto</td></tr>
+          </tbody>
+        </table>
+        <p>Em caso de empate na pontuação RAW semanal, os participantes empatados recebem a mesma posição e os pontos F1-like correspondentes. A próxima posição será o número da posição + 1, ignorando a quantidade de participantes que empataram (ex: 2 empatados em 3º, o próximo é 5º).</p>
+
+        <h3>3. Ranking</h3>
+        <p>O ranking geral do NFL Beer Fantasy é determinado pela soma de todos os pontos F1-like acumulados pelos participantes ao longo da temporada. O participante com mais pontos ao final da temporada regular será o grande campeão!</p>
+
+        <h3>4. Disputas e Decisões Finais</h3>
+        <p>Em caso de qualquer situação não prevista nas regras, a decisão final caberá ao administrador da liga.</p>
+
+        <p>Boa sorte com seus palpites e que vença o melhor!</p>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 NFL Beer Fantasy. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFL Beer Fantasy - Calcular Pontos F1</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><a href="{{ url_for('home') }}">NFL Beer Fantasy</a></h1>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('home') }}">Home</a></li><li>
+                        <li><a href="{{ url_for('regras') }}">Regras</a></li>
+                        <li><a href="{{ url_for('evolucao_pontuacao_page') }}">Evolução Pontuação</a></li>
+                    {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('meu_perfil') }}">Meu Perfil</a></li>
+                        <li><a href="{{ url_for('palpitar') }}">Palpitar</a></li>
+                        {% if current_user.is_admin %}
+                            <li><a href="{{ url_for('admin_dashboard') }}">Painel Administrativo</a></li>
+                        {% endif %}
+                        <li><a href="{{ url_for('logout') }}">Sair</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('login') }}">Entrar</a></li>
+                        <li><a href="{{ url_for('registro') }}">Registrar</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <h2>Calcular Pontos F1-like por Rodada</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <p>Esta ferramenta permite recalcular os pontos F1-like para uma semana específica. Isso pode ser útil após correções manuais de placares ou para revalidar a pontuação de uma rodada.</p>
+        <p><strong>Atenção:</strong> Recalcular os pontos de uma semana irá sobrescrever quaisquer pontuações F1-like existentes para essa semana.</p>
+
+        <form method="POST" action="{{ url_for('calcular_f1_rodada') }}">
+            <div class="form-group">
+                <label for="semana">Número da Semana:</label>
+                <input type="number" id="semana" name="semana" min="1" required>
+            </div>
+            <button type="submit" class="btn-primary">Recalcular Pontos F1</button>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn-info">Voltar para o Painel</a>
+        </form>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 NFL Beer Fantasy. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>
