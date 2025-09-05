@@ -62,7 +62,7 @@ class Participante(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    senha_hash = db.Column(db.String(128))
+    senha_hash = db.Column(db.String(255)) # Ou db.Column(db.Text) para garantir espaço de sobra
     is_admin = db.Column(db.Boolean, default=False)
     # Relações
     palpites = db.relationship('Palpite', backref='participante', lazy=True, cascade="all, delete-orphan") 
