@@ -7,30 +7,21 @@ from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignat
 
 print(f"Flask está carregando o arquivo: {os.path.abspath(__file__)}")
 
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
-# ----------------------------------------------------------------------------
 # Configuração da aplicação Flask
-# ----------------------------------------------------------------------------
 app = Flask(__name__)
 # Adiciona enumerate e utcnow() (para uso em templates) aos globais do Jinja
 app.jinja_env.globals.update(enumerate=enumerate, utcnow=lambda: datetime.now(timezone.utc)) 
-
-# CHAVES SECRETAS: É CRÍTICO que estas chaves sejam definidas como variáveis de ambiente
-# em produção (no Render, por exemplo) para maior segurança.
-# Caso não estejam nas variáveis de ambiente, os valores abaixo serão usados (para desenvolvimento local).
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'uma_chave_secreta_muito_segura_e_longa_para_o_projeto_nflbeer')
-app.config['SECURITY_PASSWORD_SALT'] = os.environ.get('SECURITY_PASSWORD_SALT', 'uma_nova_chave_secreta_para_redefinir_senha_muito_segura')
-
-# CONFIGURAÇÃO DO BANCO DE DADOS: Agora apontando para PostgreSQL.
-# No Render, ele usará a variável de ambiente DATABASE_URL.
-# Para desenvolvimento local, ele usará a string 'postgresql://user:password@localhost:5432/nfl_beer_fantasy_dev'.
-# Altere essa string de fallback se seu setup PostgreSQL local for diferente.
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://user:password@localhost:5432/nfl_beer_fantasy_dev')
+app.config['SECRET_KEY'] = 'uma_chave_secreta_muito_segura_e_longa_para_o_projeto_nflbeer'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///nfl_beer_fantasy.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Chave secreta para os tokens de redefinição de senha (MUDE ESTA CHAVE EM PRODUÇÃO!)
+app.config['SECURITY_PASSWORD_SALT'] = 'uma_nova_chave_secreta_para_redefinir_senha_muito_segura' 
+
 
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
@@ -43,9 +34,7 @@ BRAZIL_TIMEZONE = pytz.timezone('America/Sao_Paulo')
 s = URLSafeTimedSerializer(app.config['SECRET_KEY'], salt=app.config['SECURITY_PASSWORD_SALT'])
 
 
-# ----------------------------------------------------------------------------
 # Adiciona o filtro datetime_local ao Jinja
-# ----------------------------------------------------------------------------
 @app.template_filter('datetime_local')
 def _jinja2_filter_datetime_local(date_utc, tz):
     if not date_utc:
@@ -53,11 +42,7 @@ def _jinja2_filter_datetime_local(date_utc, tz):
     # Converte de UTC para o timezone especificado
     return date_utc.astimezone(tz)
 
-# ----------------------------------------------------------------------------
 # --- Modelos de Banco de Dados ---
-# As classes Participante, Jogo, Palpite, Configuracao e PontuacaoRodada
-# já estavam configuradas corretamente para SQLAlchemy e foram mantidas.
-# ----------------------------------------------------------------------------
 class Participante(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(80), unique=True, nullable=False)
@@ -125,9 +110,7 @@ class PontuacaoRodada(db.Model):
     def __repr__(self):
         return f'<PontuacaoRodada Participante {self.participante_id} Semana {self.semana}: {self.pontos_f1} pontos>'
 
-# ----------------------------------------------------------------------------
 # --- Funções Auxiliares ---
-# ----------------------------------------------------------------------------
 @login_manager.user_loader
 def load_user(participante_id):
     return Participante.query.get(int(participante_id))
@@ -242,11 +225,11 @@ def calcular_pontos_f1_por_rodada(semana):
     pontuacoes_raw_por_participante = db.session.query(
         Participante.id,
         Participante.nome,
-        db.func.coalesce(db.func.sum(Palpite.pontuacao_recebida), 0).label('total_pontos_raw')
+        db.func.sum(Palpite.pontuacao_recebida).label('total_pontos_raw')
     ).join(Palpite).join(Jogo).filter(
         Jogo.semana == semana
     ).group_by(Participante.id, Participante.nome).order_by(
-        db.func.coalesce(db.func.sum(Palpite.pontuacao_recebida), 0).desc()
+        db.func.sum(Palpite.pontuacao_recebida).desc()
     ).all()
 
     # Zera as pontuações F1-like existentes para a semana antes de recalcular
@@ -292,22 +275,7 @@ def fetch_external_games_data():
     with open(file_path, 'r', encoding='utf-8') as f:
         return json.load(f)
 
-# ----------------------------------------------------------------------------
 # --- Rotas da Aplicação ---
-# ----------------------------------------------------------------------------
-
-# Middleware para verificar modo de manutenção (do nosso bate-papo anterior)
-@app.before_request
-def check_maintenance_mode():
-    maintenance_mode = os.environ.get('MAINTENANCE_MODE', 'False').lower() == 'true'
-    # Permite acesso à página de manutenção e a recursos estáticos
-    if maintenance_mode and request.path not in ['/maintenance', '/static/'] and not request.path.startswith('/static/'):
-        return render_template('maintenance.html'), 503
-
-@app.route('/maintenance')
-def maintenance_page():
-    return render_template('maintenance.html'), 503
-
 @app.route('/')
 @app.route('/home')
 def home():
@@ -1229,13 +1197,11 @@ def evolucao_pontuacao_data():
         'datasets': datasets
     })
 
-# ----------------------------------------------------------------------------
 # --- Execução da Aplicação ---
-# ----------------------------------------------------------------------------
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all() # Tenta criar as tabelas se não existirem no PostgreSQL
-        # Cria um usuário admin padrão se não existir (apenas para ambiente de desenvolvimento/primeira inicialização)
+        db.create_all()
+        # Cria um usuário admin padrão se não existir
         if not Participante.query.filter_by(email='admin@example.com').first():
             admin_user = Participante(nome='admin', email='admin@example.com', is_admin=True)
             admin_user.set_password('admin_password_strong_!23')
